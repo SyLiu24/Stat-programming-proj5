@@ -1,0 +1,10 @@
+model {
+  for (i in 1:N) {
+    mu[i] <- alpha + beta * t[i] ## mean changes linearly with time t[i]
+    x[i] ~ dt(mu[i],tau,df) ## scaled t for x_i
+}
+  alpha ~ dnorm(50,.01) ## alpha prior
+  beta ~ dnorm(0,.1) ## beta prior
+  tau ~ dgamma(1.4,.6) ## precision prior
+  df ~ dunif(2,100) ## degrees of freedom (nu) prior
+}
