@@ -44,10 +44,8 @@
 # and 106 for inference as these are Christmas/New Year data with various 
 # recording problems.
 
-pdf("excess.pdf",height=10,width=6)
-par(mfrow=c(2,1))
-
-setwd("D:/Edinburgh/Statistical Programming/proj5")
+# Set working directory
+# setwd("where/working directory/is")
 
 # Set up source data
 # lt1720uk.dat contains columns:
@@ -114,10 +112,11 @@ lines(pre_death2022,col="blue")
 legend("topright","predicted deaths",lty=1,col="blue")
 
 # Plot the cumulative excess deaths by week
+# Excess deaths each week: ed2022_w
 plot(cumsum(ed2022_w),xlab="Week",ylab="Cumulative excess deaths",
      main="Cumulative excess deaths in 2020-2022")
 
-
+# Load rjags
 library(rjags)
 
 # Omit data with recording problems
@@ -168,4 +167,3 @@ legend("topright",c("every 50th sampled mu",
 plot(x-mu_exp,xlab="Week",ylab="Residuals")
 abline(0,0,lty=2)
 
-dev.off()
