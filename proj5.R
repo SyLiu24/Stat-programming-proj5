@@ -44,7 +44,8 @@
 # and 106 for inference as these are Christmas/New Year data with various 
 # recording problems.
 
-
+pdf("excess.pdf",height=10,width=6)
+par(mfrow=c(2,1))
 
 setwd("D:/Edinburgh/Statistical Programming/proj5")
 
@@ -90,11 +91,6 @@ predict_death <- function(fpop,mpop,mf,mm,d) {
   death_pre
 }
 
-
-d1=death$deaths[1:156]
-d2=predict_death(lt$fpop17, lt$mpop17, lt$mf, lt$mm, death$d[1:156])
-sum(d1-d2)
-
 w22 <- nrow(death) # week at the end of data
 
 # Compute excess deaths from the start of 2020 to the end of the data
@@ -129,11 +125,12 @@ x <- ed2022_w # excess deaths from 2020
 x[c(51,52,53,105,106)] <- NA
 
 # Implement the Bayesian model for excess deaths in JAGS
-nadapt <- 1000 # burn-in
+nadapt <- 1000 # adaptation
 wN <- w22-157+1 # total number of weeks from 2020 to the end of data
 mod <- jags.model("model.jags",data=list(x=x,N=wN),n.adapt=nadapt)
 # Draw 10000 samples form the posterior of parameters mu vector, rho and k
 sam.coda <- coda.samples(mod,c("mu","rho","k"),n.iter=10000)
+# Trace plots for all parameters show rapid convergence, no need to burn in
 
 # Investigate the parameters of model
 # Produce the trace plot and histogram of posterior for rho
@@ -167,5 +164,8 @@ legend("topright",c("every 50th sampled mu",
        lty=c(1,1,NA,NA),col=c("grey","blue","black","red"),pch=c(NA,NA,1,1))
 
 # Plot the residuals from this model, x_i−E(mu_i), against time
-plot(ed2022_w-mu_exp,xlab="Week",ylab="Residuals")
+# Omit the residuals that correspond to the x_i with recording problems
+plot(x-mu_exp,xlab="Week",ylab="Residuals")
 abline(0,0,lty=2)
+
+dev.off()
